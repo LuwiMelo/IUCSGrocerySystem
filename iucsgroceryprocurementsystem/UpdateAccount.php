@@ -3,64 +3,48 @@
 
 
 session_start();
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "iucsproducts_db";
+
+include 'connection.php';
 
 
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-   die("Connection failed: " . $conn->connect_error);
-} 
-
-
-    
-    
-
-    $sql3 = "UPDATE tblusers
-             SET UserUsername = '".$_POST['UserUsername']."',
-             UserPassword = '".$_POST['UserPassword']."',
-             UserFirstName = '".$_POST['UserFirstName']."',
-             UserLastName =  '".$_POST['UserLastName']."',
-             UserUserTypeID = '2',
-             PositionLevel = '".$_POST['PositionLevel']."',
-             UserEmployeeID = '".$_POST['EmployeeID']."'
+try
+{
+    //$LatestSchoolYear;
+    $statement = $dbh->prepare("UPDATE tblusers
+             SET UserUsername = :UserUsername,
+             UserPassword = :UserPassword,
+             UserFirstName = :UserFirstName,
+             UserLastName =  :UserLastName,
+             UserUserTypeID = :UserUserTypeID,
+             PositionLevel = :PositionLevel,
+             UserEmployeeID = :UserEmployeeID
              WHERE
-             UserID = '".$_POST['UserID']."'  ";
-
+             UserID = :UserID   ");
     
-    if ($conn->query($sql3) === TRUE) {
+    
+    if ($statement->execute(array(':UserUsername' => $_POST['UserUsername'], ':UserPassword' => $_POST['UserPassword'], ':UserFirstName' => $_POST['UserFirstName'],  ':UserLastName' => $_POST['UserLastName'], ':UserUserTypeID' => 2,':PositionLevel' => $_POST['PositionLevel'],':UserEmployeeID' => $_POST['EmployeeID'],':UserID' => $_POST['UserID']   ))    ){
         
+        
+            header('Location: UserList.php');
+        
+        
+    }
+    else
+{
+   header("HTTP/1.0 403 Forbidden");
+}
     
   
-        
-  
-    
-        header('Location: UserList.php');
-    
-       
-        
-        
-        
-    }// if product is inserted successfully 
-   
+}
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
+    $QuerySuccessIndicator = false;
+     header("HTTP/1.0 403 Forbidden");
+}
     
     
-    
-    
-    
-    
-    
-
-
-
-
-
-
 
 
 

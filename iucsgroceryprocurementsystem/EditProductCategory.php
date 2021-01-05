@@ -7,47 +7,45 @@ include 'adminlayout.php';
 
 
 
-
-//echo frontEcho($activeindicator);
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "iucsproducts_db";
-
-
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-   die("Connection failed: " . $conn->connect_error);
-} 
+include 'connection.php'; 
 
 
 $ProductCategoryIDRetrieve = $_POST['ProductCategoryID'];
 
 
-    $Select = "SELECT * FROM tblproductcategories WHERE ProductCategoryID = '".$ProductCategoryIDRetrieve."'  ";
-    $result = $conn->query($Select);
-    $SupplierIDRetrieve;
 
 
-if ($result->num_rows > 0) {
-    echo "<tr>";
+try
+{
+    $LatestSchoolYear;
+    $statement = $dbh->prepare("SELECT * FROM tblproductcategories WHERE ProductCategoryID = :ProductCategoryID ");
+    $statement->execute(array(':ProductCategoryID' => $ProductCategoryIDRetrieve));
+    $row = $statement->fetch();
     
-    while($row = $result->fetch_assoc()) {
-        
-        
-        
+    if (!empty($row)) {
+          
+            
         $ProductCategoryNameRetrieve = $row['ProductCategoryName'];
         $ProductCategoryDetailsRetrieve = $row['ProductCategoryDescription'];
-
+          
+    } 
+    else {
+   
        
-        
     }
-
-
+  
 }
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
+}
+
+
+
+
+
+
+
 
 
 

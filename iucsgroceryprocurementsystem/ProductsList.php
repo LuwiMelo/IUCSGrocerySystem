@@ -7,22 +7,7 @@ include 'adminlayout.php';
 
 
 
-
-//echo frontEcho($activeindicator);
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "iucsproducts_db";
-
-
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-   die("Connection failed: " . $conn->connect_error);
-} 
-
+include 'connection.php';
 
 
 
@@ -86,45 +71,52 @@ if ($conn->connect_error) {
                                         <?php
        
                 
-                
-                
-                
-                
-
-                
-        $Select = "SELECT ProductID,ProductName,ProductCategoryName FROM tblproducts,tblproductcategories WHERE tblproducts.ProductCategoryID = tblproductcategories.ProductCategoryID ";
-        $result = $conn->query($Select);
-
-
-if ($result->num_rows > 0) {
-    echo "<tr>";
+           try
+{
+    $LatestSchoolYear;
+    $statement = $dbh->prepare("SELECT ProductID,ProductName,ProductCategoryName FROM tblproducts,tblproductcategories WHERE tblproducts.ProductCategoryID = tblproductcategories.ProductCategoryID");
+    $statement->execute();
+    $row = $statement->fetchAll();
     
-    while($row = $result->fetch_assoc()) {
+    
+    if (!empty($row)) {
+          $index = 1;
+  
+        
+    foreach($row as $data){
         
         
-        
-        
-        
-        echo "<td>".$row['ProductID']."</td>";
-        echo "<td>".$row['ProductName']."</td>";
-         echo "<td>".$row['ProductCategoryName']."</td>";
+        echo '<tr>';
+            
+           echo "<td>".$data['ProductID']."</td>";
+        echo "<td>".$data['ProductName']."</td>";
+         echo "<td>".$data['ProductCategoryName']."</td>";
 
         
-        echo " <td> <form action=\"EditProductInitializer.php\" method=\"post\"><input class=\"btn btn-success\" type=\"submit\" value=\"Edit\" > <input type=\"hidden\" name=\"iddd1\" value=\"".$row["ProductID"]."\">
+        echo " <td> <form action=\"EditProductInitializer.php\" method=\"post\"><input class=\"btn btn-success\" type=\"submit\" value=\"Edit\" > <input type=\"hidden\" name=\"iddd1\" value=\"".$data["ProductID"]."\">
         
         </form></td> </tr> ";
         
-       
+    }
+    } 
+    else {
+   
+      
+    }
+  
+}
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
         
+}
        
-        
-    } // while row = result fetch assoc
-    
-    
-    
-    
-} 
                 
+                
+                
+
+                
+              
                 
                 
                 

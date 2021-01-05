@@ -2,21 +2,7 @@
 
 
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "iucsproducts_db";
-
-
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-   die("Connection failed: " . $conn->connect_error);
-} 
-
-
+include 'connection.php';
 
 
 
@@ -25,16 +11,36 @@ $UnitOfMeasurement = $_POST['UnitOfMeasurement'];
 $UOMDetails = $_POST['UOMDetails'];
 
 
-
-
-  $sql3 = "INSERT INTO tblunitofmeasurement (`UOMID`,`UOMName`,`UOMDescription`) VALUES ('".$UOMID."' , '".$UnitOfMeasurement."', '".$UOMDetails."'  );";
+try
+{
+    //$LatestSchoolYear;
+    $statement = $dbh->prepare("INSERT INTO tblunitofmeasurement (`UOMID`,`UOMName`,`UOMDescription`) VALUES (:UOMID , :UOMName, :UOMDescription  );");
     
     
-    
-
-if ($conn->query($sql3) === TRUE) {
-    header('Location: UnitOfMeasurementList.php');
+    if ($statement->execute(array(':UOMID' => $UOMID, ':UOMName' => $UnitOfMeasurement, ':UOMDescription' => $UOMDetails   ))    ){
+        
+        
+          header('Location: UnitOfMeasurementList.php');
+        
+        
+    }
+    else
+{
+   header("HTTP/1.0 403 Forbidden");
 }
+    
+  
+}
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
+    $QuerySuccessIndicator = false;
+     header("HTTP/1.0 403 Forbidden");
+} 
+
+
+
+
 
 
 

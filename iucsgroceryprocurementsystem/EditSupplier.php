@@ -7,47 +7,39 @@ include 'adminlayout.php';
 
 
 
+include 'connection.php';
 
-//echo frontEcho($activeindicator);
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "iucsproducts_db";
-
-
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-   die("Connection failed: " . $conn->connect_error);
-} 
 
 
 $SupplierIDRetrieve = $_POST['SupplierID'];
 
 
-    $Select = "SELECT * FROM tblsuppliers WHERE SupplierID = '".$SupplierIDRetrieve."' ";
-    $result = $conn->query($Select);
-    $SupplierIDRetrieve;
 
-
-if ($result->num_rows > 0) {
-    echo "<tr>";
+try
+{
+    $LatestSchoolYear;
+    $statement = $dbh->prepare("SELECT * FROM tblsuppliers WHERE SupplierID = '".$SupplierIDRetrieve."' ");
+    $statement->execute();
+    $row = $statement->fetch();
     
-    while($row = $result->fetch_assoc()) {
-        
-        
-        
+    if (!empty($row)) {
+          
+            
         $SupplierNameRetrieve = $row['SupplierName'];
         $SupplierDetailsRetrieve = $row['SupplierDetails'];
-
+          
+    } 
+    else {
+   
        
-        
     }
-
-
+  
 }
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
+}
+
 
 
 

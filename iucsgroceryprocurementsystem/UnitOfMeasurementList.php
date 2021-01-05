@@ -7,21 +7,7 @@ include 'adminlayout.php';
 
 
 
-
-//echo frontEcho($activeindicator);
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "iucsproducts_db";
-
-
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-   die("Connection failed: " . $conn->connect_error);
-} 
+include 'connection.php';
 
 
 
@@ -87,52 +73,48 @@ if ($conn->connect_error) {
        
                 
                 
-                
-                
-                
-
-                
-        $Select = "SELECT * FROM tblunitofmeasurement";
-        $result = $conn->query($Select);
-
-
-if ($result->num_rows > 0) {
-    echo "<tr>";
+                try
+{
+    $LatestSchoolYear;
+    $statement = $dbh->prepare("SELECT * FROM tblunitofmeasurement");
+    $statement->execute();
+    $row = $statement->fetchAll();
     
-    while($row = $result->fetch_assoc()) {
+    
+    if (!empty($row)) {
+          $index = 1;
+  
+        
+    foreach($row as $data){
         
         
-        
-        
-        
-        echo "<td>".$row['UOMID']."</td>";
-        echo "<td>".$row['UOMName']."</td>";
+        echo '<tr>';
+      echo "<td>".$data['UOMID']."</td>";
+        echo "<td>".$data['UOMName']."</td>";
         
 
         
-        echo " <td> <form action=\"EditUnitOfMeasurement.php\" method=\"post\"><input class=\"btn btn-success\" type=\"submit\" value=\"Edit\" > <input type=\"hidden\" name=\"UOMID\" value=\"".$row["UOMID"]."\">
+        echo " <td> <form action=\"EditUnitOfMeasurement.php\" method=\"post\"><input class=\"btn btn-success\" type=\"submit\" value=\"Edit\" > <input type=\"hidden\" name=\"UOMID\" value=\"".$data["UOMID"]."\">
         
         </form></td> </tr>";
         
-     
-        
-        
-        
-       
-        
-
-       
-        
-    } // while row = result fetch assoc
-    
-    
-    
-    
-} 
+    }
+    } 
+    else {
+   
+      
+    }
+  
+}
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
+}
+ 
+                                        
+                                        
                 
-                
-                
-                
+      
                 
         ?>
                                     </table>

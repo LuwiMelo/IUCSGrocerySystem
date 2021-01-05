@@ -7,51 +7,43 @@ include 'adminlayout.php';
 
 
 
-
-//echo frontEcho($activeindicator);
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "iucsproducts_db";
-
-
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-   die("Connection failed: " . $conn->connect_error);
-} 
+include 'connection.php';
 
 
 $RetrieveEditProductID = $_SESSION['EditProductID'];
 
 
-    $Select = "SELECT ProductName,ProductDetails,tblproducts.ProductCategoryID FROM tblproducts,tblproductcategories WHERE ProductID = '".$RetrieveEditProductID."' AND tblproducts.ProductCategoryID = tblproductcategories.ProductCategoryID  ";
-    $result = $conn->query($Select);
-   
 
 
-if ($result->num_rows > 0) {
+
+try
+{
+    $LatestSchoolYear;
+    $statement = $dbh->prepare("SELECT ProductName,ProductDetails,tblproducts.ProductCategoryID FROM tblproducts,tblproductcategories WHERE ProductID = :ProductID AND tblproducts.ProductCategoryID = tblproductcategories.ProductCategoryID   ");
+    $statement->execute(array(':ProductID' => $RetrieveEditProductID));
+    $row = $statement->fetch();
     
+    if (!empty($row)) {
+          
+            
+      
     
-    while($row = $result->fetch_assoc()) {
-        
-        
         $EditProductProductName = $row['ProductName'];
         $EditProductProductDetails = $row['ProductDetails'];
         $EditProductCategoryID = $row['ProductCategoryID'];
-    
         
-
+          
+    } 
+    else {
+   
        
-        
     }
-
-
+  
 }
-
-
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
+}
 
 
 
@@ -144,19 +136,23 @@ if ($result->num_rows > 0) {
                                         <div class="col-md-9  col-xs-12">                                                                                            
                                             <select class="form-control select" name="ProductCategoryID" id="ProductCategoryID">
                                                    <?php 
-                                                        
-                                                        
+try
+{
+ 
+    
+   
+    $statement = $dbh->prepare("SELECT ProductCategoryID,ProductCategoryName FROM tblproductcategories ORDER BY ProductCategoryName ");
+    $statement->execute();
+    $row = $statement->fetchAll();
+    
+    
+    
+    if (!empty($row)) {
         
-
-                                                        
-$sql = "SELECT ProductCategoryID,ProductCategoryName FROM tblproductcategories ORDER BY ProductCategoryName    ";
-$result = $conn->query($sql);
-
-if ($result->num_rows > 0) {
-    while($row = mysqli_fetch_array($result)){
+        foreach($row as $data){
+            
         
-        
-        if($row['ProductCategoryID'] == $EditProductCategoryID ){
+        if($data['ProductCategoryID'] == $EditProductCategoryID ){
             
             $selected = "selected";
         }
@@ -165,13 +161,29 @@ if ($result->num_rows > 0) {
         }
         
         
-        echo '<option value ="' . $row['ProductCategoryID'] . '" '. $selected .'>' . $row['ProductCategoryName'] . '</option>';
+        echo '<option value ="' . $data['ProductCategoryID'] . '" '. $selected .'>' . $data['ProductCategoryName'] . '</option>';
         
+            
+        
+        }
+        
+    } 
+    else {
    
+      echo '<option> No data </option>';
+    }
+
 
     
 }
-}
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
+}                                         
+                                                        
+        
+
+
                                                         
                                                         ?>  
                                               
@@ -283,43 +295,52 @@ if ($result->num_rows > 0) {
                 
                 
                 
-                
-                
-
-                
-        $Select = "SELECT tblunitofmeasurement.UOMName,tblunitofmeasurement.UOMID,tblsuppliers.SupplierID,tblsuppliers.SupplierName,tblproductxuom.Price FROM tblproductxuom,tblunitofmeasurement,tblsuppliers WHERE tblproductxuom.ProductXUOMProductID =  '".$RetrieveEditProductID."' AND tblproductxuom.ProductXUOMUOMID = tblunitofmeasurement.UOMID AND tblproductxuom.ProductXUOMSupplierID = tblsuppliers.SupplierID  ";
-        $result = $conn->query($Select);
-
-
-if ($result->num_rows > 0) {
-    echo "<tr>";
+try
+{
+   
+    $statement = $dbh->prepare("SELECT tblunitofmeasurement.UOMName,tblunitofmeasurement.UOMID,tblsuppliers.SupplierID,tblsuppliers.SupplierName,tblproductxuom.Price FROM tblproductxuom,tblunitofmeasurement,tblsuppliers WHERE tblproductxuom.ProductXUOMProductID =  '".$RetrieveEditProductID."' AND tblproductxuom.ProductXUOMUOMID = tblunitofmeasurement.UOMID AND tblproductxuom.ProductXUOMSupplierID = tblsuppliers.SupplierID");
+    $statement->execute();
+    $row = $statement->fetchAll();
     
-    while($row = $result->fetch_assoc()) {
+    
+    if (!empty($row)) {
+          $index = 1;
+  
+        
+    foreach($row as $data){
         
         
+        echo '<tr>';
+            
+         
         
-        
-        
-        echo "<td>".$row['UOMName']."</td>";
-        echo "<td>".$row['SupplierName']."</td>";
-        echo "<td>".$row['Price']."</td>";
-        echo "<td>".$row['UOMID']."</td>";
-        echo "<td>".$row['SupplierID']."</td>";
+        echo "<td>".$data['UOMName']."</td>";
+        echo "<td>".$data['SupplierName']."</td>";
+        echo "<td>".$data['Price']."</td>";
+        echo "<td>".$data['UOMID']."</td>";
+        echo "<td>".$data['SupplierID']."</td>";
 
 
          echo "<td> <button class=\"btn btn-info\" id=\"btnUpdatePrice\"  data-toggle=\"modal\" data-target=\"#modal_editprice\">UPDATE PRICE </button>  </td>
     </tr>";
         
+    }
+    } 
+    else {
+   
+      
+    }
+  
+}
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
         
-
-        
-    } // while row = result fetch assoc
-    
-    
-    
-    
-} 
+}
+   
                 
+                
+             
                 
                 
                 
@@ -483,21 +504,48 @@ if ($result->num_rows > 0) {
                                                         
                                                         
         
-
-                                                        
-$sql = "SELECT UOMID,UOMName FROM tblunitofmeasurement ORDER BY UOMName    ";
-$result = $conn->query($sql);
-
-if ($result->num_rows > 0) {
-    while($row = mysqli_fetch_array($result)){
         
-        echo '<option value ="' . $row['UOMID'] . '" '. $selected .'>' . $row['UOMName'] . '</option>';
-        
+try
+{
+ 
+    
    
+    $statement = $dbh->prepare("SELECT UOMID,UOMName FROM tblunitofmeasurement ORDER BY UOMName");
+    $statement->execute();
+    $row = $statement->fetchAll();
+    
+    
+    
+    if (!empty($row)) {
+        
+        foreach($row as $data){
+            
+            $selected = ""; 
+        
+            
+           echo '<option value ="' . $data['UOMID'] . '" '. $selected .'>' . $data['UOMName'] . '</option>';
+            
+            
+        
+        }
+        
+    } 
+    else {
+   
+      echo '<option> No data </option>';
+    }
+
 
     
 }
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
 }
+  
+                                            
+                                            
+                                                        
                                                         
                                                         ?>  
                                               
@@ -532,22 +580,46 @@ if ($result->num_rows > 0) {
                                                      <?php 
                                                         
                                                         
-        
-
-                                                        
-$sql = "SELECT SupplierID,SupplierName FROM tblsuppliers ORDER BY SupplierName    ";
-$result = $conn->query($sql);
-
-if ($result->num_rows > 0) {
-    while($row = mysqli_fetch_array($result)){
-        
-        echo '<option value ="' . $row['SupplierID'] . '" '. $selected .'>' . $row['SupplierName'] . '</option>';
-        
+    try
+{
+ 
+    
    
+    $statement = $dbh->prepare("SELECT SupplierID,SupplierName FROM tblsuppliers ORDER BY SupplierName");
+    $statement->execute();
+    $row = $statement->fetchAll();
+    
+    
+    
+    if (!empty($row)) {
+        
+        foreach($row as $data){
+            
+            $selected = ""; 
+        
+            
+     echo '<option value ="' . $data['SupplierID'] . '" '. $selected .'>' . $data   ['SupplierName'] . '</option>';
+            
+            
+        
+        }
+        
+    } 
+    else {
+   
+      echo '<option> No data </option>';
+    }
+
 
     
 }
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
 }
+
+                                                        
+
                                                         
                                                         ?>  
                                 

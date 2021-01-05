@@ -1,21 +1,7 @@
 <?php 
 
 
-
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "iucsproducts_db";
-
-
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-   die("Connection failed: " . $conn->connect_error);
-} 
-
+include 'connection.php';
 
 
 
@@ -26,18 +12,32 @@ $SupplierDetails = $_POST['SupplierDetails'];
 
 
 
-
-  $sql3 = "UPDATE tblsuppliers SET SupplierName = '".$SupplierName."', SupplierDetails = '".$SupplierDetails."' WHERE SupplierID = '".$SupplierID."'   ";
+try
+{
+    //$LatestSchoolYear;
+    $statement = $dbh->prepare("UPDATE tblsuppliers SET SupplierName = :SupplierName , SupplierDetails = :SupplierDetails WHERE SupplierID = :SupplierID ");
     
     
-    
-
-if ($conn->query($sql3) === TRUE) {
-    header('Location: SuppliersList.php');
+    if ($statement->execute(array(':SupplierName' => $SupplierName, ':SupplierDetails' => $SupplierDetails, ':SupplierID' => $SupplierID   ))    ){
+        
+        
+        header('Location: SuppliersList.php');
+        
+        
+    }
+    else
+{
+   header("HTTP/1.0 403 Forbidden");
 }
-
-
-
+    
+  
+}
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
+    $QuerySuccessIndicator = false;
+     header("HTTP/1.0 403 Forbidden");
+} 
 
 
 

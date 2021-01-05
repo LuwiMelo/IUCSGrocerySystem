@@ -106,8 +106,8 @@ if ($result->num_rows > 0) {
 
     $pdf->SetFont('Arial','B',11);
     //$pdf->Cell(89);
-    $pdf->Cell(0,10,'District V',0,0,'C');
-    $pdf->Ln(5);
+    //$pdf->Cell(0,10,'District V',0,0,'C');
+    //$pdf->Ln(5);
 
 
     $pdf->SetFont('Arial','B',11);
@@ -296,7 +296,7 @@ $pdf->SetFillColor(200,200,200);
         //$pdf->Cell(20,0,"_________________________",0,2,'L');
         //$pdf->Cell(0,0,"____________________________",0,2,'C');
         //$pdf->Cell(20);
-        $pdf->Cell(230,0,"Request for Payment by:",0,2,'R');
+        $pdf->Cell(205,0,"Request for Payment by:",0,2,'R');
 
          $pdf->Ln(16);
 
@@ -312,7 +312,7 @@ $pdf->SetFillColor(200,200,200);
         //$pdf->Cell(20,0,"_________________________",0,2,'L');
         //$pdf->Cell(0,0,"____________________________",0,2,'C');
         //$pdf->Cell(20);
-        $pdf->Cell(235,0,"_________________________",0,2,'R');
+        $pdf->Cell(225,0,"___________________________________",0,2,'R');
 
          $pdf->Ln(6);
 
@@ -322,14 +322,14 @@ $pdf->SetFillColor(200,200,200);
         $pdf->Cell(30);
         //$pdf->Cell(15,0, 'Request for Payment by:',0,2,'C');
         $pdf->Cell(210,0,'',0,2,'C');
-        $pdf->Cell(203,0,'Ms. Rose Vidamo',0,2,'R');
+        $pdf->Cell(203,0,'Ms. Rose Vidamo/Ms. Milka Villanueva',0,2,'R');
         $pdf->Cell(220,0,'',0,2,'R');
         $pdf->Ln(6);
 
 
 
          
-        $pdf->Cell(30);
+        $pdf->Cell(10);
         //$pdf->Cell(15,0,"Barangay Captain",0,2,'C');
         //$pdf->Cell(210,0,"Secretary",0,2,'C');
         $pdf->Cell(198,0,"HRD Officer",0,2,'R');

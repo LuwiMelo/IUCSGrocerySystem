@@ -2,75 +2,69 @@
 
 
 
-
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "iucsproducts_db";
-
-
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-   die("Connection failed: " . $conn->connect_error);
-} 
-
+include 'connection.php';
 
 
 
 if (isset($_POST["RetrieveTransaction"]))
 {
  
-    
+        
     $Retrieve = json_decode($_POST["RetrieveTransaction"]);
     
     
     
-      $sql3 = "UPDATE tblproducts 
-      SET ProductName = '".$Retrieve->ProductName."', 
-          ProductDetails = '".$Retrieve->ProductDescription."',
-          ProductCategoryID = '".$Retrieve->ProductCategoryID."'
-      WHERE ProductID  = '".$Retrieve->ProductID."'  ";
     
     
+       $statement = $dbh->prepare("UPDATE tblproducts 
+      SET ProductName = :ProductName, 
+          ProductDetails = :ProductDetails,
+          ProductCategoryID = :ProductCategoryID
+      WHERE ProductID  =  :ProductID ");
+    
+    
+    if ($statement->execute(array(':ProductName' => $Retrieve->ProductName, ':ProductDetails' => $Retrieve->ProductDescription, ':ProductCategoryID' => $Retrieve->ProductCategoryID,  ':ProductID' => $Retrieve->ProductID   ))    ){
+        
+        
 
-    
-    if ($conn->query($sql3) === TRUE) {
-        
-    
-  
-        
         
         $UOMIDList;
         $SupplierIDList;
         
         $AlreadyExistsCount = 0;
         
-     $sql9 = "SELECT ProductXUOMUOMID, ProductXUOMSupplierID FROM tblproductxuom WHERE ProductXUOMProductID = '".$Retrieve->ProductID."'   ";
         
-     $result = $conn->query($sql9);
 
-if ($result->num_rows > 0) {
-    while($row = mysqli_fetch_array($result)){
         
-        $UOMIDList[$AlreadyExistsCount] = $row['ProductXUOMUOMID'];
-        $SupplierIDList[$AlreadyExistsCount] = $row['ProductXUOMSupplierID'];
-        $AlreadyExistsCount++;
+try
+{
+    $LatestSchoolYear;
+    $statement = $dbh->prepare("SELECT ProductXUOMUOMID, ProductXUOMSupplierID FROM tblproductxuom WHERE ProductXUOMProductID = :ProductXUOMProductID  ");
+    $statement->execute(array(':ProductXUOMProductID' => $Retrieve->ProductID));
+    $row = $statement->fetchAll();
+    
+    if (!empty($row)) {
+          
+            
+    foreach($row as $data){
+
+            $UOMIDList[$AlreadyExistsCount] = $data['ProductXUOMUOMID'];
+            $SupplierIDList[$AlreadyExistsCount] = $data['ProductXUOMSupplierID'];
+            $AlreadyExistsCount++;
+    }
+          
+    } 
+    else {
    
-
-    
+       
+    }
+  
 }
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
 }
-    
-    
-
-    
-   
         
-        
-    
         
         
         
@@ -79,15 +73,14 @@ if ($result->num_rows > 0) {
     
 
         
-        
-        
-        
-        
+
         
     
     for ($x = 0; $x < $TotalItemsOrdered; $x++)
     {
         
+        echo $Retrieve->ProductPricing[$x]->Price;
+        echo '<br>';
         
         
         
@@ -127,18 +120,19 @@ if ($result->num_rows > 0) {
         
 if($InsertNewProductValidator == FALSE){
     
-      $sql4 = "UPDATE tblproductxuom SET Price = '".$Retrieve->ProductPricing[$x]->Price."' WHERE ProductXUOMProductID = '".$Retrieve->ProductID."' AND ProductXUOMUOMID = '".$Retrieve->ProductPricing[$x]->UOMID."'  AND  ProductXUOMSupplierID = '".$Retrieve->ProductPricing[$x]->SupplierID."'     ";
+
         
+       $statement4 = $dbh->prepare("UPDATE tblproductxuom SET Price = :Price WHERE ProductXUOMProductID = :ProductXUOMProductID AND ProductXUOMUOMID = :ProductXUOMUOMID  AND  ProductXUOMSupplierID = :ProductXUOMSupplierID");
+    
+    
+    if ($statement4->execute(array(':Price' => $Retrieve->ProductPricing[$x]->Price, ':ProductXUOMProductID' => $Retrieve->ProductID ,':ProductXUOMUOMID' => $Retrieve->ProductPricing[$x]->UOMID,  ':ProductXUOMSupplierID' => $Retrieve->ProductPricing[$x]->SupplierID   ))    ){
+    
+         echo ' na-update ang price';
+    }
+    else{
         
-       if ($conn->query($sql4) === TRUE) {
-            
-            //$LastTransactionID++;
-           //header('Location: ProductsList.php');
-            
-        }
-    
-    
-    
+        echo 'failed update ng price';
+    }
     
     
 }
@@ -148,12 +142,18 @@ else if($InsertNewProductValidator == TRUE){
         $sql4 = "INSERT INTO tblproductxuom (`ProductXUOMProductID`,`ProductXUOMUOMID`,`ProductXUOMSupplierID`,`Price`) VALUES ('".$Retrieve->ProductID."' , '".$Retrieve->ProductPricing[$x]->UOMID."', '".$Retrieve->ProductPricing[$x]->SupplierID."', '".$Retrieve->ProductPricing[$x]->Price."' );";
         
         
-       if ($conn->query($sql4) === TRUE) {
-            
-            //$LastTransactionID++;
-           //header('Location: ProductsList.php');
-            
-        }
+    $statement5 = $dbh->prepare("INSERT INTO tblproductxuom (`ProductXUOMProductID`,`ProductXUOMUOMID`,`ProductXUOMSupplierID`,`Price`) VALUES (:ProductXUOMProductID, :ProductXUOMUOMID, :ProductXUOMSupplierID, :Price );");
+    
+    
+    if ($statement5->execute(array(':ProductXUOMProductID' => $Retrieve->ProductID, ':ProductXUOMUOMID' => $Retrieve->ProductPricing[$x]->UOMID, ':ProductXUOMSupplierID' => $Retrieve->ProductPricing[$x]->SupplierID,  ':Price' => $Retrieve->ProductPricing[$x]->Price   ))    ){
+    
+        echo 'naginsert ng bagong entry';
+    }
+    else{
+        echo 'failed to insert new entry';
+    }
+    
+    
     
     
     

@@ -8,20 +8,7 @@ include 'adminlayout.php';
 
 
 
-//echo frontEcho($activeindicator);
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "iucsproducts_db";
-
-
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-   die("Connection failed: " . $conn->connect_error);
-} 
+include 'connection.php'; 
 
 
 
@@ -87,48 +74,47 @@ if ($conn->connect_error) {
        
                 
                 
-                
-                
-                
-
-                
-        $Select = "SELECT * FROM tblproductcategories";
-        $result = $conn->query($Select);
-
-
-if ($result->num_rows > 0) {
-    echo "<tr>";
+                try
+{
+    $LatestSchoolYear;
+    $statement = $dbh->prepare("SELECT * FROM tblproductcategories");
+    $statement->execute();
+    $row = $statement->fetchAll();
     
-    while($row = $result->fetch_assoc()) {
+    
+    if (!empty($row)) {
+          $index = 1;
+  
+        
+    foreach($row as $data){
         
         
-        
-        
-        
-        echo "<td>".$row['ProductCategoryID']."</td>";
-        echo "<td>".$row['ProductCategoryName']."</td>";
+        echo '<tr>';
+        echo "<td>".$data['ProductCategoryID']."</td>";
+        echo "<td>".$data['ProductCategoryName']."</td>";
         
 
         
-        echo " <td> <form action=\"EditProductCategory.php\" method=\"post\"><input class=\"btn btn-success\" type=\"submit\" value=\"Edit\" > <input type=\"hidden\" name=\"ProductCategoryID\" value=\"".$row["ProductCategoryID"]."\">
+        echo " <td> <form action=\"EditProductCategory.php\" method=\"post\"><input class=\"btn btn-success\" type=\"submit\" value=\"Edit\" > <input type=\"hidden\" name=\"ProductCategoryID\" value=\"".$data["ProductCategoryID"]."\">
         
         </form></td> </tr>";
         
-       
-        
-        
-        
-       
-        
+    }
+    } 
+    else {
+   
+      
+    }
+  
+}
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
+}
+                
+                
 
-       
-        
-    } // while row = result fetch assoc
-    
-    
-    
-    
-} 
+                
                 
                 
                 

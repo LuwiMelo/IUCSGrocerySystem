@@ -3,62 +3,46 @@
 
 
 session_start();
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "iucsproducts_db";
+
+
+include 'connection.php';
 
 
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-   die("Connection failed: " . $conn->connect_error);
+
+
+
+
+try
+{
+    //$LatestSchoolYear;
+    $statement = $dbh->prepare("INSERT INTO tblusers (`UserID`,`UserUsername`,`UserPassword`,`UserFirstName`,`UserLastName`,`UserUserTypeID`,`PositionLevel`,`UserEmployeeID`) VALUES (:UserID , :UserUsername, :UserPassword, :UserFirstName, :UserLastName, :UserUserTypeID , :PositionLevel , :UserEmployeeID );");
+    
+    
+    if ($statement->execute(array(':UserID' => $_POST['UserID'], ':UserUsername' => $_POST['UserUsername'], ':UserPassword' => $_POST['UserPassword'], ':UserFirstName' => $_POST['UserFirstName'],  ':UserLastName' => $_POST['UserLastName'],  ':UserUserTypeID' => 2, ':PositionLevel' => $_POST['PositionLevel'],  ':UserEmployeeID' => $_POST['EmployeeID']    ))    ){
+        
+        
+            header('Location: UserList.php');
+        
+        
+    }
+    else
+{
+   header("HTTP/1.0 403 Forbidden");
+}
+    
+  
+}
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
+    $QuerySuccessIndicator = false;
+     header("HTTP/1.0 403 Forbidden");
 } 
-
-
 
 
  
     
-
-    
-    
-    
-      $sql3 = "INSERT INTO tblusers (`UserID`,`UserUsername`,`UserPassword`,`UserFirstName`,`UserLastName`,`UserUserTypeID`,`PositionLevel`,`UserEmployeeID`) VALUES ('".$_POST['UserID']."' , '".$_POST['UserUsername']."', '".$_POST['UserPassword']."', '".$_POST['UserFirstName']."', '".$_POST['UserLastName']."', '2' , '".$_POST['PositionLevel']."' , '".$_POST['EmployeeID']."' );";
-    
-    
-
-    
-    if ($conn->query($sql3) === TRUE) {
-        
-    
-  
-        
-  
-    
-        header('Location: UserList.php');
-    
-       
-        
-        
-        
-    }// if product is inserted successfully 
-   
-    
-    
-    
-    
-    
-    
-    
-
-
-
-
-
-
 
 
 

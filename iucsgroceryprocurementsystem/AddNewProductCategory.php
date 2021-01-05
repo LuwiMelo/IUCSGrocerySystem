@@ -8,46 +8,38 @@ include 'adminlayout.php';
 
 
 
-//echo frontEcho($activeindicator);
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "iucsproducts_db";
-
-
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-   die("Connection failed: " . $conn->connect_error);
-} 
+include 'connection.php';
 
 
 
 
-
-    $Select = "SELECT MAX(ProductCategoryID)+1 AS 'NewProductCategoryID' FROM tblproductcategories";
-    $result = $conn->query($Select);
-    $SupplierIDRetrieve;
-
-
-if ($result->num_rows > 0) {
-    echo "<tr>";
+try
+{
+    $LatestSchoolYear;
+    $statement = $dbh->prepare("SELECT MAX(ProductCategoryID)+1 AS 'NewProductCategoryID' FROM tblproductcategories");
+    $statement->execute();
+    $row = $statement->fetch();
     
-    while($row = $result->fetch_assoc()) {
-        
-        
-        
-        $SupplierIDRetrieve = $row['NewProductCategoryID'];
-        
-
+    if (!empty($row)) {
+          
+            $SupplierIDRetrieve = $row['NewProductCategoryID'];
+          
+    } 
+    else {
+   
        
-        
     }
-
-
+  
 }
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
+}
+
+
+
+
+
 
 
 

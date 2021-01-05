@@ -2,20 +2,7 @@
 
 
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "iucsproducts_db";
-
-
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-   die("Connection failed: " . $conn->connect_error);
-} 
-
+include 'connection.php';
 
 
 
@@ -26,15 +13,38 @@ $UOMDescription = $_POST['UOMDetails'];
 
 
 
-
-  $sql3 = "UPDATE tblunitofmeasurement SET UOMName= '".$UnitOfMeasurementName."', UOMDescription=  '".$UOMDescription."' WHERE UOMID = '".$UOMID."'   ";
+try
+{
+    //$LatestSchoolYear;
+    $statement = $dbh->prepare("UPDATE tblunitofmeasurement SET UOMName = :UOMName, UOMDescription=  :UOMDescription WHERE UOMID = :UOMID  ");
     
     
-    
-
-if ($conn->query($sql3) === TRUE) {
-    header('Location: UnitOfMeasurementList.php');
+    if ($statement->execute(array(':UOMName' => $UnitOfMeasurementName, ':UOMDescription' => $UOMDescription, ':UOMID' => $UOMID   ))    ){
+        
+        
+        header('Location: UnitOfMeasurementList.php');
+        
+        
+    }
+    else
+{
+   header("HTTP/1.0 403 Forbidden");
 }
+    
+  
+}
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
+    $QuerySuccessIndicator = false;
+     header("HTTP/1.0 403 Forbidden");
+}
+
+
+
+
+
+
 
 
 

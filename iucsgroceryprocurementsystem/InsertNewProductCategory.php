@@ -1,21 +1,7 @@
 <?php 
 
 
-
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "iucsproducts_db";
-
-
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-   die("Connection failed: " . $conn->connect_error);
-} 
-
+include 'connection.php';
 
 
 
@@ -27,14 +13,36 @@ $ProductCategoryDetails = $_POST['ProductCategoryDetails'];
 
 
 
-  $sql3 = "INSERT INTO tblproductcategories (`ProductCategoryID`,`ProductCategoryName`,`ProductCategoryDescription`) VALUES ('".$ProductCategoryID."' , '".$ProductCategory."', '".$ProductCategoryDetails."'  );";
+try
+{
+    //$LatestSchoolYear;
+    $statement = $dbh->prepare("INSERT INTO tblproductcategories (`ProductCategoryID`,`ProductCategoryName`,`ProductCategoryDescription`) VALUES (:ProductCategoryID , :ProductCategoryName, :ProductCategoryDescription  );");
     
     
-    
-
-if ($conn->query($sql3) === TRUE) {
-    header('Location: ProductCategoriesList.php');
+    if ($statement->execute(array(':ProductCategoryID' => $ProductCategoryID, ':ProductCategoryName' => $ProductCategory, ':ProductCategoryDescription' => $ProductCategoryDetails   ))    ){
+        
+        
+        header('Location: ProductCategoriesList.php');
+        
+        
+    }
+    else
+{
+   header("HTTP/1.0 403 Forbidden");
 }
+    
+  
+}
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
+    $QuerySuccessIndicator = false;
+     header("HTTP/1.0 403 Forbidden");
+} 
+
+
+
+
 
 
 

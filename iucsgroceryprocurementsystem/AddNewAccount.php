@@ -4,50 +4,35 @@ session_start();
 
 //$class = ($page == 'one') ? 'class="active"' : '';
 include 'adminlayout.php';
+include 'connection.php';
 
 
 
-
-//echo frontEcho($activeindicator);
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "iucsproducts_db";
-
-
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-   die("Connection failed: " . $conn->connect_error);
-} 
-
-
-
-
-
-    $Select = "SELECT MAX(UserID)+1 AS 'NewUserID' FROM tblusers";
-    $result = $conn->query($Select);
-    $LastUserIDRetrieve;
-
-
-if ($result->num_rows > 0) {
-    echo "<tr>";
+try
+{
+    $LatestSchoolYear;
+    $statement = $dbh->prepare("SELECT MAX(UserID)+1 AS 'NewUserID' FROM tblusers");
+    $statement->execute();
+    $row = $statement->fetch();
     
-    while($row = $result->fetch_assoc()) {
-        
-        
-        
-        $LastUserIDRetrieve = $row['NewUserID'];
-        
-
+    if (!empty($row)) {
+          
+               $LastUserIDRetrieve = $row['NewUserID'];
+          
+    } 
+    else {
+   
        
-        
     }
-
-
+  
 }
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
+}
+
+
+
 
 
 

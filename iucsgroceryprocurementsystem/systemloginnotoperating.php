@@ -69,7 +69,7 @@
 <script type="text/javascript">
 $(document).ready(function($){
    
-    alert("System Log-in failed! Ordering period is from 1st -15th day of the month.");
+    alert("System Log-in failed! Ordering period is during Mondays-Thursdays only. Ordering during Thursdays is until 3:00 pm only");
 });
 
 </script>

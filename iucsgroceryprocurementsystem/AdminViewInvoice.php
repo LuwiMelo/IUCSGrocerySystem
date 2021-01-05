@@ -365,10 +365,10 @@ if ($result->num_rows > 0) {
 
 
          
-        $pdf->Cell(30);
-        $pdf->Cell(15,0,$DisplayFullName,0,2,'C');
-        $pdf->Cell(210,0,"Ms. Rose Vidamo",0,2,'C');
-        $pdf->Cell(210,0,'Ms. Miraflor Caimen',0,2,'R');
+        $pdf->Cell(15);
+        $pdf->Cell(80,0,$DisplayFullName,0,0,'L');
+        $pdf->Cell(100,0,"Ms. Rose Vidamo/Ms. Milka Villanueva                      Ms. Angellette Y. Dominguez",0,0,'L');
+        //$pdf->Cell(300,0,'Ms. Angellete Y. Dominguez',0,2,'L');
         //$pdf->Cell(220,0,'gerg',0,2,'R');
         $pdf->Ln(6);
 
@@ -376,7 +376,7 @@ if ($result->num_rows > 0) {
 
          
         $pdf->Cell(30);
-        $pdf->Cell(15,0,'Ordered by',0,2,'C');
+        $pdf->Cell(15,0,'',0,2,'C');
         $pdf->Cell(210,0,"HRD Officer",0,2,'C');
         $pdf->Cell(205,0,"Finance Officer",0,2,'R');
 

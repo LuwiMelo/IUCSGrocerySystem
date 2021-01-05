@@ -8,24 +8,11 @@ include 'adminlayout.php';
 
 
 
-//echo frontEcho($activeindicator);
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "iucsproducts_db";
+include 'connection.php';
 
 
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-   die("Connection failed: " . $conn->connect_error);
-} 
-
-
-
-
+$DataTableQuery = "SELECT * FROM tblsuppliers";
 
 
 
@@ -83,58 +70,57 @@ if ($conn->connect_error) {
                                                 
                                             </tr>
                                         </thead>
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
                                         <?php
-       
-                
-                
-                
-                
-                
-
-                
-        $Select = "SELECT * FROM tblsuppliers";
-        $result = $conn->query($Select);
-
-
-if ($result->num_rows > 0) {
-    echo "<tr>";
+                  
+                  
+try
+{
+    $LatestSchoolYear;
+    $statement = $dbh->prepare($DataTableQuery);
+    $statement->execute();
+    $row = $statement->fetchAll();
     
-    while($row = $result->fetch_assoc()) {
+    
+    if (!empty($row)) {
+          $index = 1;
+  
+        
+    foreach($row as $data){
         
         
+        echo '<tr>';
+        echo "<td>".$data['SupplierID']."</td>";
+        echo "<td>".$data['SupplierName']."</td>";
         
         
-        
-        echo "<td>".$row['SupplierID']."</td>";
-        echo "<td>".$row['SupplierName']."</td>";
-        
-
-        
-        echo " <td> <form action=\"EditSupplier.php\" method=\"post\"><input class=\"btn btn-success\" type=\"submit\" value=\"Edit\" > <input type=\"hidden\" name=\"SupplierID\" value=\"".$row["SupplierID"]."\">
+        echo " <td> <form action=\"EditSupplier.php\" method=\"post\"><input class=\"btn btn-success\" type=\"submit\" value=\"Edit\" > <input type=\"hidden\" name=\"SupplierID\" value=\"".$data["SupplierID"]."\">
         
         </form></td> </tr> ";
-        
-         
-        
-        
-        
-       
-        
+  
+            $index++;
+    }
+    } 
+    else {
+   
+      
+    }
+  
+}
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
+}
 
-       
-        
-    } // while row = result fetch assoc
-    
-    
-    
-    
-} 
-                
-                
-                
-                
-                
-        ?>
+                  
+                                                  
+?>
+  
                                     </table>
                 
           <a href="AddNewSupplier.php">  <button class="btn btn-info active">Add New Record</button> </a>

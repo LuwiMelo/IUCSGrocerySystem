@@ -7,47 +7,36 @@ include 'adminlayout.php';
 
 
 
-
-//echo frontEcho($activeindicator);
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "iucsproducts_db";
-
-
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-   die("Connection failed: " . $conn->connect_error);
-} 
+include 'connection.php';
 
 
 
 
-
-    $Select = "SELECT MAX(ProductID)+1 AS 'NewProductID' FROM tblproducts";
-    $result = $conn->query($Select);
-    $SupplierIDRetrieve;
-
-
-if ($result->num_rows > 0) {
-    echo "<tr>";
+try
+{
+    $LatestSchoolYear;
+    $statement = $dbh->prepare("SELECT MAX(ProductID)+1 AS 'NewProductID' FROM tblproducts");
+    $statement->execute();
+    $row = $statement->fetch();
     
-    while($row = $result->fetch_assoc()) {
-        
-        
-        
-        $SupplierIDRetrieve = $row['NewProductID'];
-        
-
+    if (!empty($row)) {
+          
+                $SupplierIDRetrieve = $row['NewProductID'];
+          
+    } 
+    else {
+   
        
-        
     }
-
-
+  
 }
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
+}
+
+
+
 
 
 
@@ -139,24 +128,48 @@ if ($result->num_rows > 0) {
                                             <select class="form-control select" name="ProductCategoryID" id="ProductCategoryID">
                                                    <?php 
                                                         
-                                                        
-        
-
-                                                        
-$sql = "SELECT ProductCategoryID,ProductCategoryName FROM tblproductcategories ORDER BY ProductCategoryName    ";
-$result = $conn->query($sql);
-
-if ($result->num_rows > 0) {
-    while($row = mysqli_fetch_array($result)){
-        
-        echo '<option value ="' . $row['ProductCategoryID'] . '" '. $selected .'>' . $row['ProductCategoryName'] . '</option>';
-        
+try
+{
+ 
+    
    
+    $statement = $dbh->prepare("SELECT ProductCategoryID,ProductCategoryName FROM tblproductcategories ORDER BY ProductCategoryName");
+    $statement->execute();
+    $row = $statement->fetchAll();
+    
+    
+    
+    if (!empty($row)) {
+        
+        foreach($row as $data){
+            
+            $selected = ""; 
+        
+            
+             echo '<option value ="' . $data['ProductCategoryID'] . '" '. $selected .'>' . $data['ProductCategoryName'] . '</option>';
+            
+            
+        
+        }
+        
+    } 
+    else {
+   
+      echo '<option> No data </option>';
+    }
+
 
     
 }
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
 }
-                                                        
+
+                                                
+                                                
+        
+                                                      
                                                         ?>  
                                               
                                               
@@ -418,21 +431,48 @@ if ($result->num_rows > 0) {
                                                         
                                                         
         
-
-                                                        
-$sql = "SELECT UOMID,UOMName FROM tblunitofmeasurement ORDER BY UOMName    ";
-$result = $conn->query($sql);
-
-if ($result->num_rows > 0) {
-    while($row = mysqli_fetch_array($result)){
-        
-        echo '<option value ="' . $row['UOMID'] . '" '. $selected .'>' . $row['UOMName'] . '</option>';
-        
+try
+{
+ 
+    
    
+    $statement = $dbh->prepare("SELECT UOMID,UOMName FROM tblunitofmeasurement ORDER BY UOMName");
+    $statement->execute();
+    $row = $statement->fetchAll();
+    
+    
+    
+    if (!empty($row)) {
+        
+        foreach($row as $data){
+            
+            $selected = ""; 
+        
+            
+           echo '<option value ="' . $data['UOMID'] . '" '. $selected .'>' . $data['UOMName'] . '</option>';
+            
+            
+        
+        }
+        
+    } 
+    else {
+   
+      echo '<option> No data </option>';
+    }
+
 
     
 }
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
 }
+                                            
+                                            
+                                            
+
+                                                        
                                                         
                                                         ?>  
                                               
@@ -468,23 +508,51 @@ if ($result->num_rows > 0) {
                                                         
                                                         
         
-
-                                                        
-$sql = "SELECT SupplierID,SupplierName FROM tblsuppliers ORDER BY SupplierName    ";
-$result = $conn->query($sql);
-
-if ($result->num_rows > 0) {
-    while($row = mysqli_fetch_array($result)){
-        
-        echo '<option value ="' . $row['SupplierID'] . '" '. $selected .'>' . $row['SupplierName'] . '</option>';
-        
+                                            
+                                            
+    try
+{
+ 
+    
    
+    $statement = $dbh->prepare("SELECT SupplierID,SupplierName FROM tblsuppliers ORDER BY SupplierName");
+    $statement->execute();
+    $row = $statement->fetchAll();
+    
+    
+    
+    if (!empty($row)) {
+        
+        foreach($row as $data){
+            
+            $selected = ""; 
+        
+            
+     echo '<option value ="' . $data['SupplierID'] . '" '. $selected .'>' . $data   ['SupplierName'] . '</option>';
+            
+            
+        
+        }
+        
+    } 
+    else {
+   
+      echo '<option> No data </option>';
+    }
+
 
     
 }
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
 }
+                                            
+                                            
+
                                                         
-                                                        ?>  
+                                                        
+?>  
                                 
                                          
  

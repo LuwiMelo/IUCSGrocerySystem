@@ -1,21 +1,7 @@
 <?php 
 
 
-
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "iucsproducts_db";
-
-
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-   die("Connection failed: " . $conn->connect_error);
-} 
-
+include 'connection.php';
 
 
 
@@ -27,14 +13,38 @@ $ProductCategoryDescription = $_POST['ProductCategoryDetails'];
 
 
 
-  $sql3 = "UPDATE tblproductcategories SET ProductCategoryName = '".$ProductCategoryName."', ProductCategoryDescription = '".$ProductCategoryDescription."' WHERE ProductCategoryID = '".$ProductCategoryID."'    ";
+try
+{
+    //$LatestSchoolYear;
+    $statement = $dbh->prepare("UPDATE tblproductcategories SET ProductCategoryName = :ProductCategoryName, ProductCategoryDescription = :ProductCategoryDescription WHERE ProductCategoryID = :ProductCategoryID  ");
     
     
-    
-
-if ($conn->query($sql3) === TRUE) {
+    if ($statement->execute(array(':ProductCategoryName' => $ProductCategoryName, ':ProductCategoryDescription' => $ProductCategoryDescription, ':ProductCategoryID' => $ProductCategoryID   ))    ){
+        
+        
     header('Location: ProductCategoriesList.php');
+        
+        
+    }
+    else
+{
+   header("HTTP/1.0 403 Forbidden");
 }
+    
+  
+}
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
+    $QuerySuccessIndicator = false;
+     header("HTTP/1.0 403 Forbidden");
+} 
+
+
+
+
+
+
 
 
 

@@ -5,24 +5,7 @@ session_start();
 //$class = ($page == 'one') ? 'class="active"' : '';
 include 'adminlayout.php';
 
-
-
-
-//echo frontEcho($activeindicator);
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "iucsproducts_db";
-
-
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-   die("Connection failed: " . $conn->connect_error);
-} 
-
+include 'connection.php';
 
 
 
@@ -87,50 +70,50 @@ if ($conn->connect_error) {
                                         <?php
        
                 
+                    
                 
-                
-                
-                
-
-                
-        $Select = "SELECT * FROM tblusers WHERE UserUserTypeID = '2' AND UserID <> 2 AND UserID <> 3  ORDER BY UserLastName,UserFirstName ";
-        $result = $conn->query($Select);
-
-
-if ($result->num_rows > 0) {
-    echo "<tr>";
+try
+{
+    $LatestSchoolYear;
+    $statement = $dbh->prepare("SELECT * FROM tblusers WHERE UserUserTypeID = '2' AND UserID <> 2 AND UserID <> 3  ORDER BY UserLastName,UserFirstName");
+    $statement->execute();
+    $row = $statement->fetchAll();
     
-    while($row = $result->fetch_assoc()) {
+    
+    if (!empty($row)) {
+          $index = 1;
+  
+        
+    foreach($row as $data){
         
         
-        
-        
-        
-        echo "<td>".$row['UserID']."</td>";
-        echo "<td>".$row['UserEmployeeID']."</td>";
-        echo "<td>".$row['UserLastName']."</td>";
-         echo "<td>".$row['UserFirstName']."</td>";
-          echo "<td>".$row['UserUsername']."</td>";
+        echo '<tr>';
+            
+        echo "<td>".$data['UserID']."</td>";
+        echo "<td>".$data['UserEmployeeID']."</td>";
+        echo "<td>".$data['UserLastName']."</td>";
+         echo "<td>".$data['UserFirstName']."</td>";
+          echo "<td>".$data['UserUsername']."</td>";
 
 
         
-        echo " <td> <form action=\"EditProfileInitializer.php\" method=\"post\"><input class=\"btn btn-success\" type=\"submit\" value=\"Edit\" > <input type=\"hidden\" name=\"iddd1\" value=\"".$row["UserID"]."\">
+        echo " <td> <form action=\"EditProfileInitializer.php\" method=\"post\"><input class=\"btn btn-success\" type=\"submit\" value=\"Edit\" > <input type=\"hidden\" name=\"iddd1\" value=\"".$data["UserID"]."\">
         
         </form></td> </tr> ";
         
+    }
+    } 
+    else {
+   
       
+    }
+  
+}
+catch (PDOException $e)
+{
+    echo "There is some problem in connection: " . $e->getMessage();
         
-        
-       
-        
-    } // while row = result fetch assoc
-    
-    
-    
-    
-} 
-                
-                
+}
                 
                 
                 

@@ -3,20 +3,7 @@
 
 
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "iucsproducts_db";
-
-
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-   die("Connection failed: " . $conn->connect_error);
-} 
-
+include 'connection.php';
 
 
 
@@ -28,12 +15,13 @@ if (isset($_POST["RetrieveTransaction"]))
     
     
     
-      $sql3 = "INSERT INTO tblproducts (`ProductID`,`ProductName`,`ProductDetails`,`ProductCategoryID`) VALUES ('".$Retrieve->ProductID."' , '".$Retrieve->ProductName."', '".$Retrieve->ProductDescription."', '".$Retrieve->ProductCategoryID."' );";
     
+    
+     $statement = $dbh->prepare("INSERT INTO tblproducts (`ProductID`,`ProductName`,`ProductDetails`,`ProductCategoryID`) VALUES (:ProductID , :ProductName, :ProductDetails, :ProductCategoryID );");
     
 
     
-    if ($conn->query($sql3) === TRUE) {
+    if ($statement->execute(array(':ProductID' => $Retrieve->ProductID, ':ProductName' => $Retrieve->ProductName, ':ProductDetails' => $Retrieve->ProductDescription, ':ProductCategoryID' => $Retrieve->ProductCategoryID   ))    ){
         
     
   
@@ -48,15 +36,17 @@ if (isset($_POST["RetrieveTransaction"]))
         
         
         
-        $sql4 = "INSERT INTO tblproductxuom (`ProductXUOMProductID`,`ProductXUOMUOMID`,`ProductXUOMSupplierID`,`Price`) VALUES ('".$Retrieve->ProductID."' , '".$Retrieve->ProductPricing[$x]->UOMID."', '".$Retrieve->ProductPricing[$x]->SupplierID."', '".$Retrieve->ProductPricing[$x]->Price."' );";
+        $statement2 = $dbh->prepare("INSERT INTO tblproductxuom (`ProductXUOMProductID`,`ProductXUOMUOMID`,`ProductXUOMSupplierID`,`Price`) VALUES (:ProductXUOMProductID , :ProductXUOMUOMID, :ProductXUOMSupplierID, :Price );");
+        
+        if ($statement2->execute(array(':ProductXUOMProductID' => $Retrieve->ProductID, ':ProductXUOMUOMID' => $Retrieve->ProductPricing[$x]->UOMID, ':ProductXUOMSupplierID' => $Retrieve->ProductPricing[$x]->SupplierID, ':Price' => $Retrieve->ProductPricing[$x]->Price   ))    ){
+              
+              
+              
+              
+          }
         
         
-       if ($conn->query($sql4) === TRUE) {
-            
-            //$LastTransactionID++;
-           //header('Location: ProductsList.php');
-            
-        }
+        
         
         
     }
